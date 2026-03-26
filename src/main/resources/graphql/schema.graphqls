@@ -1,0 +1,78 @@
+type Query {
+  getStocks: [Stock!]!
+  getPortfolio: Portfolio!
+}
+
+type Mutation {
+  login(request: LoginRequestInput!): AuthResponse!
+  buyStock(request: TradeRequestInput!): TradeResponse!
+  sellStock(request: TradeRequestInput!): TradeResponse!
+}
+
+type User {
+  id: ID!
+  username: String!
+  roles: [String!]!
+  cashBalance: Float!
+}
+
+type Stock {
+  id: ID
+  symbol: String!
+  name: String!
+  exchange: String!
+  price: Float!
+}
+
+type Trade {
+  id: ID
+  userId: String!
+  symbol: String!
+  quantity: Int!
+  price: Float!
+  amount: Float!
+  side: String!
+  createdAt: String
+}
+
+type Holding {
+  symbol: String!
+  quantity: Int!
+  averagePrice: Float!
+  currentPrice: Float
+  marketValue: Float
+}
+
+type Portfolio {
+  userId: String!
+  cashBalance: Float!
+  holdings: [Holding!]!
+}
+
+type AuthResponse {
+  token: String!
+  tokenType: String!
+  username: String!
+  cashBalance: Float!
+}
+
+type TradeResponse {
+  id: String
+  symbol: String!
+  quantity: Int!
+  price: Float!
+  amount: Float!
+  side: String!
+  executedAt: String
+  message: String!
+}
+
+input LoginRequestInput {
+  username: String!
+  password: String!
+}
+
+input TradeRequestInput {
+  symbol: String!
+  quantity: Int!
+}
