@@ -4,7 +4,8 @@ type Query {
 }
 
 type Mutation {
-  login(request: LoginRequestInput!): AuthResponse!
+  login(username: String!, password: String!): AuthResponse!
+  register(username: String!, email: String!, password: String!): AuthResponse!
   buyStock(request: TradeRequestInput!): TradeResponse!
   sellStock(request: TradeRequestInput!): TradeResponse!
 }
@@ -17,7 +18,7 @@ type User {
 }
 
 type Stock {
-  id: ID
+  id: ID!
   symbol: String!
   name: String!
   exchange: String!
@@ -53,6 +54,7 @@ type AuthResponse {
   token: String!
   tokenType: String!
   username: String!
+  email: String!
   cashBalance: Float!
 }
 
@@ -65,11 +67,6 @@ type TradeResponse {
   side: String!
   executedAt: String
   message: String!
-}
-
-input LoginRequestInput {
-  username: String!
-  password: String!
 }
 
 input TradeRequestInput {

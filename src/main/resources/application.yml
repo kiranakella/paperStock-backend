@@ -1,21 +1,14 @@
 server:
-  port: 8080
+  port: 8585
 
 spring:
   application:
     name: paperStock-backend
   data:
     mongodb:
-      uri: mongodb://localhost:27017/papertrading
-    redis:
-      host: localhost
-      port: 6379
-  cache:
-    type: redis
+      uri: mongodb://localhost:27017/paperstock
   graphql:
     path: /graphql
-    graphiql:
-      enabled: true
 
 app:
   jwt:

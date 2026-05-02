@@ -20,6 +20,7 @@ public final class DtoMapper {
 
 	public static StockResponse toStockResponse(Stock stock) {
 		return StockResponse.builder()
+				.id(stock.getId())
 				.symbol(stock.getSymbol())
 				.name(stock.getName())
 				.exchange(stock.getExchange())
@@ -60,6 +61,7 @@ public final class DtoMapper {
 				.token(token)
 				.tokenType("Bearer")
 				.username(user.getUsername())
+				.email(user.getEmail())
 				.cashBalance(user.getCashBalance())
 				.build();
 	}

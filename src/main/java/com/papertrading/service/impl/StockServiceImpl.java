@@ -2,14 +2,12 @@ package com.papertrading.service.impl;
 
 import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.papertrading.dto.response.StockResponse;
 import com.papertrading.model.Stock;
 import com.papertrading.repository.StockRepository;
 import com.papertrading.service.StockService;
-import com.papertrading.util.AppConstants;
 import com.papertrading.util.DtoMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,7 @@ public class StockServiceImpl implements StockService {
 
 	@Override
 	public List<StockResponse> getStocks() {
-		return stockRepository.findAll().stream()
+		return stockRepository.findAllByOrderBySymbolAsc().stream()
 				.map(DtoMapper::toStockResponse)
 				.toList();
 	}
@@ -34,7 +32,6 @@ public class StockServiceImpl implements StockService {
 	}
 
 	@Override
-	@Cacheable(cacheNames = AppConstants.STOCK_PRICE_CACHE, key = "#symbol")
 	public Double getStockPrice(String symbol) {
 		return getStockBySymbol(symbol).getPrice();
 	}

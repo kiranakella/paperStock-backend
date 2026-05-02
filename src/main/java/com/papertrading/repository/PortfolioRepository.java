@@ -2,10 +2,9 @@ package com.papertrading.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
-
 import com.papertrading.model.Portfolio;
 
-public interface PortfolioRepository extends MongoRepository<Portfolio, String> {
+public interface PortfolioRepository {
 	Optional<Portfolio> findByUserId(String userId);
+	Portfolio save(Portfolio portfolio);
 }

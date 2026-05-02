@@ -1,15 +1,14 @@
 package com.papertrading.service.impl;
 
-import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.papertrading.model.Portfolio;
 import com.papertrading.model.User;
-import com.papertrading.repository.PortfolioRepository;
 import com.papertrading.repository.UserRepository;
+import com.papertrading.store.InMemoryMarketStore;
 import com.papertrading.service.UserService;
-import com.papertrading.util.AppConstants;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,13 +16,29 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+	private final InMemoryMarketStore marketStore;
 	private final UserRepository userRepository;
-	private final PortfolioRepository portfolioRepository;
 
 	@Override
 	public User getByUsername(String username) {
-		return userRepository.findByUsername(username)
+		return findByUsername(username)
 				.orElseThrow(() -> new IllegalArgumentException("User not found: " + username));
+	}
+
+	@Override
+	public Optional<User> findByUsername(String username) {
+		// Try MongoDB first
+		Optional<User> user = userRepository.findByUsername(username);
+		if (user.isPresent()) {
+			return user;
+		}
+		// Fallback to in-memory store for demo user
+		return marketStore.findUserByUsername(username);
+	}
+
+	@Override
+	public Optional<User> findByEmail(String email) {
+		return userRepository.findByEmail(email);
 	}
 
 	@Override
@@ -32,18 +47,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public boolean existsByUsername(String username) {
+		return userRepository.existsByUsername(username) || marketStore.findUserByUsername(username).isPresent();
+	}
+
+	@Override
+	public boolean existsByEmail(String email) {
+		return userRepository.existsByEmail(email);
+	}
+
+	@Override
 	public Portfolio getOrCreatePortfolio(User user) {
-		return portfolioRepository.findByUserId(user.getId())
-				.orElseGet(() -> portfolioRepository.save(
-						Portfolio.builder()
-								.userId(user.getId())
-								.cashBalance(user.getCashBalance() == null ? AppConstants.DEFAULT_CASH_BALANCE : user.getCashBalance())
-								.holdings(new ArrayList<>())
-								.build()));
+		return marketStore.getOrCreatePortfolio(user);
 	}
 
 	@Override
 	public Portfolio savePortfolio(Portfolio portfolio) {
-		return portfolioRepository.save(portfolio);
+		return marketStore.savePortfolio(portfolio);
 	}
 }

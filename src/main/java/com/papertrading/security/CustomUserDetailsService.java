@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.papertrading.repository.UserRepository;
+import com.papertrading.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,11 +13,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private final UserRepository userRepository;
+	private final UserService userService;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+		try {
+			return userService.getByUsername(username);
+		} catch (IllegalArgumentException ex) {
+			throw new UsernameNotFoundException("User not found: " + username, ex);
+		}
 	}
 }

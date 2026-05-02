@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockResponse {
+	private String id;
 	private String symbol;
 	private String name;
 	private String exchange;

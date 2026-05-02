@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 import com.papertrading.dto.request.LoginRequest;
+import com.papertrading.dto.request.RegisterRequest;
 import com.papertrading.dto.request.TradeRequest;
 import com.papertrading.dto.response.AuthResponse;
 import com.papertrading.dto.response.TradeResponse;
@@ -22,8 +23,13 @@ public class MutationResolver {
 	private final TradeService tradeService;
 
 	@MutationMapping
-	public AuthResponse login(@Argument LoginRequest request) {
-		return authService.login(request);
+	public AuthResponse login(@Argument String username, @Argument String password) {
+		return authService.login(new LoginRequest(username, password));
+	}
+
+	@MutationMapping
+	public AuthResponse register(@Argument String username, @Argument String email, @Argument String password) {
+		return authService.register(new RegisterRequest(username, password, email));
 	}
 
 	@MutationMapping
